@@ -117,13 +117,27 @@
         width: 60%;
         position: relative;
         overflow: hidden;
-        background: #878787;
 
-        background-image:
-            linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+        background: linear-gradient(rgba(0, 0, 0, .25),
+            rgba(0, 0, 0, .25)),
+        url("{{ url_for('static', filename='img/FONDO-SEGA.png') }}");
 
-        background-size: 50px 50px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    #particles-js {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .login-right-content {
+        position: relative;
+        z-index: 10;
     }
 
     .login-right::before {
@@ -221,23 +235,61 @@
         </div>
     </div>
 
-<div class="login-right">
-    <div class="login-right-content">
+    <div class="login-right">
+        <div id="particles-js"></div>
+        <div class="login-right-content">
 
-        <img src="{{ url_for('static', filename='img/logo_fgjtam_white.png') }}" alt="FGJTAM" class="right-logo">
+            <img src="{{ url_for('static', filename='img/logo_fgjtam_white.png') }}" alt="FGJTAM" class="right-logo">
 
-        <p class="right-subtitle">
-            Sistema Estratégico de Gestión de Archivos
-        </p>
+            <p class="right-subtitle">
+                Sistema Estratégico de Gestión de Archivos
+            </p>
 
+        </div>
     </div>
+
 </div>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
 
+<script>
+tsParticles.load("particles-js", {
+    particles: {
+        number: {
+            value: 80
+        },
+        color: {
+            value: "#ffffff"
+        },
+        opacity: {
+            value: 0.25
+        },
+        size: {
+            value: {
+                min: 1,
+                max: 4
+            }
+        },
+        move: {
+            enable: true,
+            speed: 0.8
+        },
+        links: {
+            enable: true,
+            color: "#ffffff",
+            opacity: 0.12,
+            distance: 150
+        }
+    },
+    background: {
+        color: "transparent"
+    }
+});
+</script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var nav = document.querySelector('.navbar');
-            if (nav) nav.remove();
-        });
-    </script>
-    {% endblock %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var nav = document.querySelector('.navbar');
+        if (nav) nav.remove();
+    });
+</script>
+{% endblock %}
