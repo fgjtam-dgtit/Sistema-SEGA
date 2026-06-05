@@ -120,7 +120,7 @@
 
         background: linear-gradient(rgba(0, 0, 0, .25),
             rgba(0, 0, 0, .25)),
-        url("{{ url_for('static', filename='img/FONDO-SEGA.png') }}");
+        url("{{ url_for('static', filename='img/IMAGEN.png') }}");
 
         background-size: cover;
         background-position: center;
@@ -138,6 +138,14 @@
     .login-right-content {
         position: relative;
         z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        padding: 3rem;
+        transform: translateY(-40px);
     }
 
     .login-right::before {
@@ -175,9 +183,9 @@
     }
 
     .right-logo {
-        width: 70%;
-        max-width: 550px;
-        min-width: 280px;
+        width: 55%;
+        max-width: 420px;
+        min-width: 220px;
         filter: drop-shadow(0 15px 30px rgba(0, 0, 0, .25));
         transition: all .3s ease;
     }
@@ -187,12 +195,14 @@
     }
 
     .right-subtitle {
-        margin-top: 25px;
-        color: rgba(255, 255, 255, .85);
-        font-size: 1rem;
-        letter-spacing: 2px;
+        margin-top: 45px;
+        color: #2f2f2f;
+        font-size: 1.5rem;
+        font-weight: 500;
+        letter-spacing: 5px;
+        line-height: 1.4;
         text-transform: uppercase;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+        text-align: center;
     }
 
     @media (max-width: 768px) {
@@ -242,7 +252,8 @@
             <img src="{{ url_for('static', filename='img/logo_fgjtam_white.png') }}" alt="FGJTAM" class="right-logo">
 
             <p class="right-subtitle">
-                Sistema Estratégico de Gestión de Archivos
+                SISTEMA ESTRATÉGICO DE<br>
+                GESTIÓN DE ARCHIVOS
             </p>
 
         </div>
@@ -252,38 +263,38 @@
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
 
 <script>
-tsParticles.load("particles-js", {
-    particles: {
-        number: {
-            value: 80
-        },
-        color: {
-            value: "#ffffff"
-        },
-        opacity: {
-            value: 0.25
-        },
-        size: {
-            value: {
-                min: 1,
-                max: 4
+    tsParticles.load("particles-js", {
+        particles: {
+            number: {
+                value: 80
+            },
+            color: {
+                value: "#ffffff"
+            },
+            opacity: {
+                value: 0.25
+            },
+            size: {
+                value: {
+                    min: 1,
+                    max: 4
+                }
+            },
+            move: {
+                enable: true,
+                speed: 0.8
+            },
+            links: {
+                enable: true,
+                color: "#ffffff",
+                opacity: 0.12,
+                distance: 150
             }
         },
-        move: {
-            enable: true,
-            speed: 0.8
-        },
-        links: {
-            enable: true,
-            color: "#ffffff",
-            opacity: 0.12,
-            distance: 150
+        background: {
+            color: "transparent"
         }
-    },
-    background: {
-        color: "transparent"
-    }
-});
+    });
 </script>
 
 <script>
