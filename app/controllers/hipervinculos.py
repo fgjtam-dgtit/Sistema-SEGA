@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from app.models.hipervinculo import Hipervinculo
 from app.models.cat_organigrama import CatOrganigrama
 from app import db
+from app.controllers.utils import registrar_bitacora
 import openpyxl
 from io import BytesIO
 from datetime import datetime
@@ -21,6 +22,13 @@ ALLOWED_EXTENSIONS = {
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def requiere_admin():
+    if not current_user.is_authenticated or not current_user.es_admin():
+        flash('No tienes permisos para realizar esta acción.', 'danger')
+        return False
+    return True
 
 
 @hipervinculos_bp.route('/hipervinculos')
@@ -53,6 +61,9 @@ def listar():
 @hipervinculos_bp.route('/hipervinculos/crear', methods=['GET', 'POST'])
 @login_required
 def crear():
+
+    if not requiere_admin():
+        return redirect(url_for('hipervinculos.listar'))
 
     organigramas = CatOrganigrama.query.order_by(
         CatOrganigrama.codigo
@@ -114,6 +125,12 @@ def crear():
         db.session.add(nuevo)
         db.session.commit()
 
+        registrar_bitacora(
+            accion='CREAR',
+            modulo='Hipervínculos',
+            descripcion=f'Se creó el registro de {entidad}'
+        )
+
         flash('Registro guardado exitosamente!', 'success')
 
         return redirect(url_for('hipervinculos.listar'))
@@ -127,6 +144,9 @@ def crear():
 @hipervinculos_bp.route('/hipervinculos/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
 def editar(id):
+
+    if not requiere_admin():
+        return redirect(url_for('hipervinculos.listar'))
 
     registro = Hipervinculo.query.get_or_404(id)
 
@@ -185,6 +205,12 @@ def editar(id):
 
         db.session.commit()
 
+        registrar_bitacora(
+            accion='EDITAR',
+            modulo='Hipervínculos',
+            descripcion=f'Se editó el registro {registro.id} de {registro.entidad}'
+        )
+
         flash('Registro actualizado!', 'success')
 
         return redirect(url_for('hipervinculos.listar'))
@@ -198,6 +224,9 @@ def editar(id):
 @hipervinculos_bp.route('/hipervinculos/eliminar/<int:id>')
 @login_required
 def eliminar(id):
+
+    if not requiere_admin():
+        return redirect(url_for('hipervinculos.listar'))
 
     registro = Hipervinculo.query.get_or_404(id)
 
@@ -216,6 +245,12 @@ def eliminar(id):
     db.session.delete(registro)
     db.session.commit()
 
+    registrar_bitacora(
+        accion='ELIMINAR',
+        modulo='Hipervínculos',
+        descripcion=f'Se eliminó el registro {registro.id} de {registro.entidad}'
+    )
+
     flash('Registro eliminado!', 'success')
 
     return redirect(url_for('hipervinculos.listar'))
@@ -224,6 +259,9 @@ def eliminar(id):
 @hipervinculos_bp.route('/hipervinculos/exportar')
 @login_required
 def exportar():
+
+    if not requiere_admin():
+        return redirect(url_for('hipervinculos.listar'))
 
     registros = Hipervinculo.query.order_by(
         Hipervinculo.fecha_creacion.desc()

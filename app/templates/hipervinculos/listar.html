@@ -263,6 +263,7 @@
 
         <div class="d-flex flex-wrap gap-2 ms-auto">
 
+            {% if current_user.is_authenticated and current_user.es_admin() %}
             <a href="{{ url_for('hipervinculos.crear') }}" class="btn-nuevo">
                 <i class="bi bi-plus-lg"></i>
                 Nuevo Registro
@@ -272,6 +273,7 @@
                 <i class="bi bi-file-earmark-excel"></i>
                 Exportar Excel
             </a>
+            {% endif %}
 
         </div>
 
@@ -294,7 +296,9 @@
                     <th class="col-fecha">FECHA</th>
                     <th class="col-link">HIPERVÍNCULO</th>
                     <th class="col-obs">OBSERVACIONES</th>
+                    {% if current_user.is_authenticated and current_user.es_admin() %}
                     <th class="col-eliminar text-center">ELIMINAR</th>
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -342,6 +346,7 @@
                         {{ r.observaciones[:50] if r.observaciones else '-' }}
                     </td>
 
+                    {% if current_user.is_authenticated and current_user.es_admin() %}
                     <td class="text-center">
 
                         <a href="{{ url_for('hipervinculos.eliminar', id=r.id) }}" class="btn btn-danger btn-action"
@@ -352,6 +357,7 @@
                         </a>
 
                     </td>
+                    {% endif %}
 
                 </tr>
 

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.user import User
 from app import db
+from app.controllers.utils import registrar_bitacora
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -17,6 +18,11 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
+            registrar_bitacora(
+                accion='LOGIN',
+                modulo='Autenticación',
+                descripcion=f'El usuario {username} inició sesión'
+            )
             return redirect(url_for('dashboard.index'))
         else:
             flash('Usuario o contraseña incorrectos', 'danger')
@@ -26,6 +32,11 @@ def login():
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    registrar_bitacora(
+        accion='LOGOUT',
+        modulo='Autenticación',
+        descripcion=f'El usuario {current_user.username} cerró sesión'
+    )
     logout_user()
     return redirect(url_for('auth.login'))
 
@@ -44,6 +55,11 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
+        registrar_bitacora(
+            accion='REGISTRO',
+            modulo='Autenticación',
+            descripcion=f'Se registró el usuario {username}'
+        )
         flash('Registro exitoso! Ahora inicia sesión', 'success')
         return redirect(url_for('auth.login'))
 
