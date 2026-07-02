@@ -38,8 +38,6 @@ def listar():
     busqueda = request.args.get('q', '').strip()
 
     query = Hipervinculo.query
-    if not current_user.es_admin():
-        query = query.filter_by(user_id=current_user.id)
 
     if busqueda:
         query = query.filter(
