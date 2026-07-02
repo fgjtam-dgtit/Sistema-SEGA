@@ -37,19 +37,20 @@ def listar():
 
     busqueda = request.args.get('q', '').strip()
 
+    query = Hipervinculo.query
+    if not current_user.es_admin():
+        query = query.filter_by(user_id=current_user.id)
+
     if busqueda:
-        registros = Hipervinculo.query.filter(
+        query = query.filter(
             (Hipervinculo.entidad.ilike(f'%{busqueda}%')) |
             (Hipervinculo.tipo_documento.ilike(f'%{busqueda}%')) |
             (Hipervinculo.observaciones.ilike(f'%{busqueda}%'))
-        ).order_by(
-            Hipervinculo.fecha_creacion.desc()
-        ).all()
+        )
 
-    else:
-        registros = Hipervinculo.query.order_by(
-            Hipervinculo.fecha_creacion.desc()
-        ).all()
+    registros = query.order_by(
+        Hipervinculo.fecha_creacion.desc()
+    ).all()
 
     return render_template(
         'hipervinculos/listar.html',
@@ -62,11 +63,8 @@ def listar():
 @login_required
 def crear():
 
-    if not requiere_admin():
-        return redirect(url_for('hipervinculos.listar'))
-
     organigramas = CatOrganigrama.query.order_by(
-        CatOrganigrama.codigo
+        CatOrganigrama.nombre
     ).all()
 
     if request.method == 'POST':
@@ -145,10 +143,11 @@ def crear():
 @login_required
 def editar(id):
 
-    if not requiere_admin():
-        return redirect(url_for('hipervinculos.listar'))
-
     registro = Hipervinculo.query.get_or_404(id)
+
+    if not current_user.es_admin() and registro.user_id != current_user.id:
+        flash('No tienes permisos para editar este registro.', 'danger')
+        return redirect(url_for('hipervinculos.listar'))
 
     if request.method == 'POST':
 
@@ -259,9 +258,6 @@ def eliminar(id):
 @hipervinculos_bp.route('/hipervinculos/exportar')
 @login_required
 def exportar():
-
-    if not requiere_admin():
-        return redirect(url_for('hipervinculos.listar'))
 
     registros = Hipervinculo.query.order_by(
         Hipervinculo.fecha_creacion.desc()

@@ -263,7 +263,7 @@
 
         <div class="d-flex flex-wrap gap-2 ms-auto">
 
-            {% if current_user.is_authenticated and current_user.es_admin() %}
+            {% if current_user.is_authenticated %}
             <a href="{{ url_for('hipervinculos.crear') }}" class="btn-nuevo">
                 <i class="bi bi-plus-lg"></i>
                 Nuevo Registro
