@@ -34,27 +34,33 @@ def requiere_admin():
 @hipervinculos_bp.route('/hipervinculos')
 @login_required
 def listar():
-
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Registros por página
     busqueda = request.args.get('q', '').strip()
 
     query = Hipervinculo.query
 
+    if not current_user.es_admin():
+        query = query.filter(Hipervinculo.user_id == current_user.id)
+
     if busqueda:
-        query = query.filter(
+        registros = query.filter(
             (Hipervinculo.entidad.ilike(f'%{busqueda}%')) |
             (Hipervinculo.tipo_documento.ilike(f'%{busqueda}%')) |
             (Hipervinculo.observaciones.ilike(f'%{busqueda}%'))
+        ).order_by(Hipervinculo.fecha_creacion.desc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+    else:
+        registros = query.order_by(Hipervinculo.fecha_creacion.desc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
         )
 
-    registros = query.order_by(
-        Hipervinculo.fecha_creacion.desc()
-    ).all()
-
-    return render_template(
-        'hipervinculos/listar.html',
-        registros=registros,
-        busqueda=busqueda
-    )
+    return render_template('hipervinculos/listar.html', registros=registros, busqueda=busqueda)
 
 
 @hipervinculos_bp.route('/hipervinculos/crear', methods=['GET', 'POST'])

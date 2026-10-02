@@ -239,15 +239,14 @@
     <div class="login-left">
         <div class="login-card">
 
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="login-logo"
-                onerror="this.style.display='none'">
-
+                       
             <h1 class="login-title">SEGA</h1>
             <p class="login-subtitle">Sistema Estratégico de Gestión de Archivos</p>
             <p style="text-align:center; margin-top:1rem;">
 
             </p>
-            <form method="POST">
+                       <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="text" name="username" class="login-input" placeholder="Ingrese su usuario" required>
 
                 <input type="password" name="password" class="login-input" placeholder="Ingrese su contraseña" required>
@@ -282,9 +281,9 @@
     </div>
 
 </div>
-<script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='vendor/tsparticles/tsparticles.bundle.min.js') }}"></script>
 
-<script>
+<script nonce="{{ csp_nonce }}">
     tsParticles.load("particles-js", {
         particles: {
             number: {
@@ -319,7 +318,7 @@
     });
 </script>
 
-<script>
+<script nonce="{{ csp_nonce }}">
     document.addEventListener('DOMContentLoaded', function () {
         var nav = document.querySelector('.navbar');
         if (nav) nav.remove();

@@ -6,3 +6,4 @@ pyodbc
 gunicorn
 python-dotenv
 openpyxl
+Flask-WTF

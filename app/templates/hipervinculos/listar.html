@@ -72,8 +72,7 @@
         padding: 0.8rem;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         border: 1px solid #e8ecf1;
-
-        overflow-x: auto;
+        overflow: hidden;
     }
 
     .table {
@@ -127,7 +126,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-
         color: #000 !important;
         font-weight: 700;
         text-decoration: none;
@@ -160,135 +158,100 @@
         color: #888;
     }
 
-    .col-entidad {
-        width: 20%;
+    .col-entidad { width: 20%; }
+    .col-tipo { width: 16%; }
+    .col-fecha { width: 10%; }
+    .col-link { width: 27%; }
+    .col-obs { width: 20%; }
+    .col-eliminar { width: 7%; }
+
+    /* PAGINACIÓN */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1.5rem;
+        gap: 6px;
+        flex-wrap: wrap;
     }
 
-    .col-tipo {
-        width: 16%;
+    .pagination-summary {
+        text-align: center;
+        color: #666;
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
     }
-
-    .col-fecha {
-        width: 10%;
+    .pagination-container a,
+    .pagination-container span {
+        display: inline-block;
+        min-width: 38px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+        background: #f1f1f1;
+        color: #333;
+        transition: 0.2s;
+        border: 1px solid transparent;
     }
-
-    .col-link {
-        width: 27%;
+    .pagination-container a:hover {
+        background: #dadada;
+        border-color: #bbb;
+        color: #000;
     }
-
-    .col-obs {
-        width: 20%;
+    .pagination-container .active {
+        background: #dadada;
+        color: #000;
+        border-color: #aaa;
+        pointer-events: none;
     }
-
-    .col-eliminar {
-        width: 7%;
+    .pagination-container .disabled {
+        opacity: 0.4;
+        pointer-events: none;
     }
 
     @media (max-width: 768px) {
-
-        .page-header {
-            padding: 1rem;
-        }
-
-        .search-bar {
-            flex-direction: column;
-        }
-
-        .search-bar input {
-            width: 100%;
-            min-width: 100%;
-        }
-
-        .search-bar button {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .btn-nuevo,
-        .btn-excel {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .d-flex.flex-wrap.gap-2.ms-auto {
-            width: 100%;
-            margin-top: 10px;
-            flex-direction: column;
-        }
-
-        .table {
-            min-width: 900px;
-        }
-
-        .table thead th,
-        .table tbody td {
-            font-size: 0.75rem;
-        }
-
-        .col-entidad,
-        .col-tipo,
-        .col-fecha,
-        .col-link,
-        .col-obs,
-        .col-eliminar {
-            width: auto;
-        }
+        .page-header { padding: 1rem; }
+        .search-bar { flex-direction: column; }
+        .search-bar input { width: 100%; min-width: 100%; }
+        .search-bar button { width: 100%; justify-content: center; }
+        .btn-nuevo, .btn-excel { width: 100%; justify-content: center; }
+        .d-flex.flex-wrap.gap-2.ms-auto { width: 100%; margin-top: 10px; flex-direction: column; }
+        .table { min-width: 900px; }
+        .table thead th, .table tbody td { font-size: 0.75rem; }
+        .col-entidad, .col-tipo, .col-fecha, .col-link, .col-obs, .col-eliminar { width: auto; }
+        .table-container { overflow-x: auto; }
     }
 </style>
 
 <div class="page-header">
-
     <h4><i class="bi bi-archive"></i> Archivos</h4>
-
     <div class="d-flex flex-wrap justify-content-between align-items-center">
-
         <form method="GET" action="{{ url_for('hipervinculos.listar') }}" class="search-bar">
-
             <input type="text" name="q" placeholder="Buscar por entidad, tipo o contenido..." value="{{ busqueda }}">
-
-            <button type="submit">
-                <i class="bi bi-search"></i>
-                Buscar
-            </button>
-
+            <button type="submit"><i class="bi bi-search"></i> Buscar</button>
             {% if busqueda %}
-            <a href="{{ url_for('hipervinculos.listar') }}" class="btn btn-outline-secondary ms-2"
-                style="border-radius:8px;">
-                <i class="bi bi-x-circle"></i>
-                Limpiar
+            <a href="{{ url_for('hipervinculos.listar') }}" class="btn btn-outline-secondary ms-2" style="border-radius:8px;">
+                <i class="bi bi-x-circle"></i> Limpiar
             </a>
             {% endif %}
-
         </form>
-
         <div class="d-flex flex-wrap gap-2 ms-auto">
-
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('hipervinculos.crear') }}" class="btn-nuevo">
-                <i class="bi bi-plus-lg"></i>
-                Nuevo Registro
-            </a>
-
-            <a href="{{ url_for('hipervinculos.exportar') }}" class="btn-excel">
-                <i class="bi bi-file-earmark-excel"></i>
-                Exportar Excel
-            </a>
+            <a href="{{ url_for('hipervinculos.crear') }}" class="btn-nuevo"><i class="bi bi-plus-lg"></i> Nuevo Registro</a>
+            <a href="{{ url_for('hipervinculos.exportar') }}" class="btn-excel"><i class="bi bi-file-earmark-excel"></i> Exportar Excel</a>
             {% endif %}
-
         </div>
-
     </div>
-
 </div>
 
-{% if registros %}
-
+{% if registros and registros.total > 0 %}
 <div class="table-container">
-
     <div class="table-responsive">
-
         <table class="table table-hover">
-
             <thead>
                 <tr>
                     <th class="col-entidad">AREA</th>
@@ -301,90 +264,87 @@
                     {% endif %}
                 </tr>
             </thead>
-
             <tbody>
-
-                {% for r in registros %}
-
+                {% for r in registros.items %}
                 <tr>
-
-                    <td style="font-weight:500;">
-                        {{ r.entidad }}
-                    </td>
-
-                    <td>
-                        <span class="tipo-badge">
-                            {{ r.tipo_documento }}
-                        </span>
-                    </td>
-
-                    <td style="white-space: nowrap;">
-                        {{ r.fecha or '-' }}
-                    </td>
-
+                    <td style="font-weight:500;">{{ r.entidad }}</td>
+                    <td><span class="tipo-badge">{{ r.tipo_documento }}</span></td>
+                    <td style="white-space: nowrap;">{{ r.fecha or '-' }}</td>
                     <td style="line-height:1.5;">
-
                         {% if r.url_pdf %}
-
                         <a href="{{ r.url_pdf }}" target="_blank" class="link-pdf" title="{{ r.url_pdf }}">
-
-                            <i class="bi bi-link-45deg me-1"></i>
-
-                            {{ r.url_pdf.split('/')[-1] }}
-
+                            <i class="bi bi-link-45deg me-1"></i>{{ r.url_pdf.split('/')[-1] }}
                         </a>
-
                         {% else %}
-
                         <span class="text-muted">—</span>
-
                         {% endif %}
-
                     </td>
-
-                    <td style="line-height:1.4;">
-                        {{ r.observaciones[:50] if r.observaciones else '-' }}
-                    </td>
-
+                    <td style="line-height:1.4;">{{ r.observaciones[:50] if r.observaciones else '-' }}</td>
                     {% if current_user.is_authenticated and current_user.es_admin() %}
                     <td class="text-center">
-
-                        <a href="{{ url_for('hipervinculos.eliminar', id=r.id) }}" class="btn btn-danger btn-action"
-                            onclick="return confirm('¿Eliminar registro?')">
-
+                        <a href="{{ url_for('hipervinculos.eliminar', id=r.id) }}" class="btn btn-danger btn-action" data-confirm="¿Eliminar registro?">
                             <i class="bi bi-trash"></i>
-
                         </a>
-
                     </td>
                     {% endif %}
-
                 </tr>
-
                 {% endfor %}
-
             </tbody>
-
         </table>
-
     </div>
 
+    <p class="pagination-summary">
+        Mostrando {{ registros.first }}-{{ registros.last }} de {{ registros.total }} registros
+    </p>
+
+    <!-- PAGINACIÓN -->
+    {% if registros.pages > 1 %}
+    <div class="pagination-container">
+        {% if registros.has_prev %}
+            <a href="{{ url_for('hipervinculos.listar', page=registros.prev_num, q=busqueda) }}">«</a>
+        {% else %}
+            <span class="disabled">«</span>
+        {% endif %}
+
+        {% for page_num in registros.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == registros.page %}
+                    <span class="active">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('hipervinculos.listar', page=page_num, q=busqueda) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span class="disabled">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if registros.has_next %}
+            <a href="{{ url_for('hipervinculos.listar', page=registros.next_num, q=busqueda) }}">»</a>
+        {% else %}
+            <span class="disabled">»</span>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 
 {% else %}
-
 <div class="empty-state">
-
     <i class="bi bi-archive" style="font-size: 3rem; opacity: 0.3;"></i>
-
     <h5>No hay archivos registrados</h5>
-
-    <p>
-        Utilice el botón "Nuevo Registro" para agregar un hipervínculo
-    </p>
-
+    <p>Utilice el botón "Nuevo Registro" para agregar un hipervínculo</p>
 </div>
-
 {% endif %}
+
+
+
+<script nonce="{{ csp_nonce }}">
+    document.querySelectorAll('[data-confirm]').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+            if (!confirm(el.getAttribute('data-confirm'))) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
 
 {% endblock %}
